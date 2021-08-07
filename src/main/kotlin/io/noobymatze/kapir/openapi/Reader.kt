@@ -5,6 +5,7 @@ import io.noobymatze.kapir.annotation.GET
 import io.noobymatze.kapir.annotation.Path
 import io.swagger.v3.core.util.AnnotationsUtils
 import io.swagger.v3.core.util.ReflectionUtils
+import io.swagger.v3.oas.annotations.Hidden
 import io.swagger.v3.oas.annotations.OpenAPIDefinition
 import io.swagger.v3.oas.models.OpenAPI
 import io.swagger.v3.oas.models.Operation
@@ -20,13 +21,19 @@ import kotlin.reflect.KClass
 import kotlin.reflect.full.declaredMembers
 import kotlin.reflect.jvm.jvmErasure
 
-
 /**
  *
  * @param api
  */
 fun <A: API> openApi(api: KClass<A>): OpenAPI? {
+    // This whole implementation has been ported from the Reader in the jaxrs2 module.
+    // https://github.com/swagger-api/swagger-core/blob/master/modules/swagger-jaxrs2/src/main/java/io/swagger/v3/jaxrs2/Reader.java
     val def = api.getAnnotation(OpenAPIDefinition::class) ?: return null
+    val hidden = api.getAnnotation(Hidden::class)
+
+    if (hidden != null) {
+        return null
+    }
 
     val rootPath = api.getAnnotation(Path::class)?.value?.let {
         if (it.endsWith("/"))
@@ -64,8 +71,6 @@ fun <A: API> openApi(api: KClass<A>): OpenAPI? {
     return openAPI
 }
 
-// https://github.com/swagger-api/swagger-core/blob/master/modules/swagger-jaxrs2/src/main/java/io/swagger/v3/jaxrs2/Reader.java
-// https://github.com/swagger-api/swagger-core/blob/master/modules/swagger-jaxrs2/src/main/java/io/swagger/v3/jaxrs2/OperationParser.java
 
 private fun analyzeMember(rootPath: String, member: KCallable<*>): Pair<String, PathItem> {
     val p = member.getAnnotation(Path::class)?.value

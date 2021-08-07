@@ -14,6 +14,9 @@ import java.util.*
 
 const val COMPONENTS_REF = Components.COMPONENTS_SCHEMAS_REF
 
+// All of the functions in this file have been ported from the OptionParser.
+// https://github.com/swagger-api/swagger-core/blob/master/modules/swagger-jaxrs2/src/main/java/io/swagger/v3/jaxrs2/OperationParser.java
+
 fun getRequestBody(
     requestBody: io.swagger.v3.oas.annotations.parameters.RequestBody?,
     classConsumes: Consumes?,
