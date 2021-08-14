@@ -8,6 +8,7 @@ import io.undertow.server.HttpServerExchange
 import io.undertow.server.RoutingHandler
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
+import kotlin.reflect.full.instanceParameter
 
 internal class EndpointTest {
 
@@ -64,8 +65,7 @@ private class ApiHandler<A: API>(private val api: A): HttpHandler {
     private fun <A: API> route(api: A, endpoint: Endpoint, path: String, routes: List<Route> = emptyList()): List<Route> =
         when (endpoint) {
             is Endpoint.Op -> listOf(Route(endpoint.method, path / endpoint.path) { exchange ->
-                println(endpoint.path)
-                val result: Handler<Any?> = endpoint.underlying.call(api, null) as Handler<Any?>
+                val result: Handler<Any?> = endpoint.underlying.callBy(mapOf(endpoint.underlying.instanceParameter!! to api)) as Handler<Any?>
                 when (result) {
                     is Handler.Failure ->
                         exchange.statusCode = result.failure.status
