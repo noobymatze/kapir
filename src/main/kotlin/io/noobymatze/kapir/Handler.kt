@@ -11,7 +11,7 @@ sealed class Handler<out A> {
     )
 
     data class Success<out A>(
-        val value: A
+        val value: A,
     ) : Handler<A>()
 
     data class Failure(
@@ -23,6 +23,8 @@ sealed class Handler<out A> {
         operator fun <T> invoke(f: () -> T): Handler<T> =
             Success(f())
 
+        fun <T> succeed(f: T): Handler<T> =
+            Success(f)
     }
 
 }

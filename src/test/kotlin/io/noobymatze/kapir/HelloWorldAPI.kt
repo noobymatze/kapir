@@ -22,7 +22,7 @@ interface HelloWorld : API {
     @GET
     fun hello(
         @QueryParam("name")
-        name: String
+        name: String? = null
     ): Handler<String>
 
 }
