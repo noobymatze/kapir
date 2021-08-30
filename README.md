@@ -1,5 +1,7 @@
 # Kapir
 
+**Currently just playing around with this**
+
 The most widely used libraries and frameworks for implementing HTTP
 APIs on the JVM are Spring (Boot) and JAX-RS/Jakarta EE.  Libraries
 like http4k, ktor and Javelin are other contenders especially in the
